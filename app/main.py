@@ -1,16 +1,13 @@
 from fastapi import FastAPI
-from starlette.responses import RedirectResponse
 
-app = FastAPI()
+from api.routes.routes import router
+from api.models import Base
+from api.utils.database import engine
 
-@app.get("/")
-def root():
-    return {"message":"Welcome to the Rhode API"}
 
-@app.get("/docs")
-def get_docs():
-    return RedirectResponse(url="/docs/")
+Base.metadata.create_all(bind=engine)
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app,host="0.0.0.0",port=8000)
+app = FastAPI(title="Rhodes API",description="Rhodes backend documentation",license="MIT License",version="1.0.0")
+
+
+app.include_router(router, prefix="/users", tags=["users"])
